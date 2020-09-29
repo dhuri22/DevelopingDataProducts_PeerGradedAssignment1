@@ -1,0 +1,60 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+
+## Create a web page using R Markdown that features a map created with Leaflet.
+Date : 2020-09-29
+
+
+
+
+```{r }
+library(leaflet)
+library(htmltools)
+
+```
+
+## Read Data
+The data contains the names of different pizza places and the pizza they sell.
+
+```{r }
+datamap <- read.csv(file = "./Datafiniti_Pizza_Restaurants_and_the_Pizza_They_Sell_May19.csv", header = TRUE, sep = ",")
+dim(datamap)
+```
+
+## Extract the important data from the file
+```{r }
+mimapa <- data.frame(
+                     Category=datamap$categories,
+                     Name = datamap$name,
+                     City = datamap$city,
+                     Country = datamap$country,
+                     Latitude = datamap$latitude,
+                     Longitude = datamap$longitude
+                     )
+dim(mimapa)
+```
+
+##Activatng the Map
+
+```{r}
+map <- mimapa %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(popup=paste
+             ("<br>Country: ", 
+               htmlEscape(mimapa$Country), 
+              "<br>City: ", 
+               htmlEscape(mimapa$City), 
+              "<br>Restaurant: ", 
+               htmlEscape(mimapa$Name),
+              "<br>Category: ",
+               formatC(datamap$categories, format = "d", big.mark = ",")
+              ) 
+            )
+
+map
+```
